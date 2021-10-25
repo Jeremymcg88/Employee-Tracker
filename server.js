@@ -1,14 +1,13 @@
 // Required dependecies 
 const { prompt } = require('inquirer');
-const chalkAnimation = require('chalk-animation');
-const conf = require('./configs/connection');
+// const chalkAnimation = require('chalk-animation');
+const con = require('./configs/connection');
 const Database = require('./db/index');
-const { title } = require('process');
 const db = new Database ();
 
 
 
-function initProgram () {
+function initPrompt () {
     prompt ([
         {
             type: "list",
@@ -92,10 +91,102 @@ function initProgram () {
             empArray = emps;
         });
 
-        
+        db.viewManagers()
+        .then(([row]) => {
+            let man = rows;
+            const mans = man.map (({ id, first_name, last_name }) =>
+            ({
+                name: `${first_name}, ${last_name}`,
+                value: id
+            }));
+            manArr = mans;
+        })
+            .then(() => {
+                if (answers.employees === "Exit") {
+                    return con.end();
+                } else {
+                    // iterates through choices submitted and calls the approriate method
+                    switch (answers.employees) {
+                        case 'View All Employees':
+                            return db.viewAllEmployees()
+                            .then (([rows]) => {
+                                console.table(rows)
+                                initPrompt();
+                            });
+                            case 'View All Employees by Department':
+                                return db.viewAllEmployeesByDepartment()
+                                .then (([rows]) => {
+                                    console.table(rows);
+                                    initPrompt();
+                                });
+                                case 'View All Roles':
+                                    return db.viewRoles()
+                                    .then(([rows]) => {
+                                        console.table(rows);
+                                        initPrompt;
+                                    });
+                                    case 'View All Managers':
+                                        return db.viewManagers()
+                                        .then (([rows]) => {
+                                            console.table(rows);
+                                            initPrompt;
+                                        });
+                                        case 'Add Employee':
+                                            return db.addEmployee(roleArray, manArr).then(([res]) => {
+                                                console.log('Succesfully added employee!');
+                                                initPrompt();
+                                            });
+                                            case 'More Employee Options':
+                                                switch (answers.employeeOpts) {
+                                                    case 'Remove Employee':
+                                                        return db.deleteEmployee(empArray).then((res) => {
+                                                            console.log("Succesfully removed employee!");
+                                                            initPrompt();
+                                                        });
+                                                        case 'Update Employee Manager':
+                                                            return db.updateEmployeeMan(empArray, manArr).then((res) => {
+                                                                console.log("Succesffuly updated employee's manager!");
+                                                                initPrompt();
+
+                                                            });
+                                                };
+                                                break;
+                                                case 'Department Options':
+                                                    switch (answers.deptOpts) {
+                                                        case 'Add Department':
+                                                            return db.addNewDepartment().then(([res]) => {
+                                                                console.log("Succesfully deleted department!");
+                                                                initPrompt();
+                                                            });
+                                                    }
+                                                    break;
+                                                    case 'Role Options':
+                                                        switch (answers.roleOpts) {
+                                                            case 'Add Role':
+                                                                return db.addRoles(rolArr).then ((res) => {
+                                                                    console.log('Succesfully added role!');
+                                                                    initPrompt();
+                                                                });
+                                                                case 'Remove Role':
+                                                                    return db.deleteRoles(roleArray).then((res) => {
+                                                                        console.log('Succesfully deleted role!');
+                                                                        initPrompt();
+                                                                    });
+                                                        }
+                                                        break;
+
+
+                    };
+                };
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
     });
 
 
-}
+};
+initPrompt();
 
 
