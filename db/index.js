@@ -1,5 +1,5 @@
 const { prompt } = require('inquirer');
-const config = require('../configs/connection');
+const con = require('../configs/connection');
 
 class Database {
     // This is a class method to be called in app.js during certaing conditions

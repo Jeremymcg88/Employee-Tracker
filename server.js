@@ -1,6 +1,5 @@
 // Required dependecies 
 const { prompt } = require('inquirer');
-// const chalkAnimation = require('chalk-animation');
 const con = require('./configs/connection');
 const Database = require('./db/index');
 const db = new Database ();
@@ -51,24 +50,23 @@ function initPrompt () {
         },
     ])
     .then((answers) => {
-        // Arrays that store table data once table information is invoked
-        let deptArray = [];
-        let roleArray = [];
-        let manArray = [];
-        let empArray = [];
-        // retreived information from db table arrays
+        // These arrays store table data objects once table information is called
+        let deptArr = [];
+        let rolArr = [];
+        let manArr = [];
+        let empArr = [];
+        // These add table information to related arrays
         db.viewDepartments()
         .then(([rows]) => {
             let dept = rows;
-            const depts = dept.map(({ id, name}) => 
+            const depts = dept.map(({ id, name }) => 
             ({
                 name: name,
                 value: id
-
             }));
-            deptArray = depts;
+            deptArr = depts;
         });
-        
+
         db.viewRoles()
         .then(([rows]) => {
             let role = rows;
@@ -77,116 +75,139 @@ function initPrompt () {
                 name: title,
                 value: id
             }));
-            roleArray = roles;
+            rolArr = roles;
         });
 
         db.viewAllEmployees()
-        .then (([rows]) => {
+        .then(([rows]) => {
             let emp = rows;
-            const emps = emp.map(({ id, first_name, last_name}) =>
+            const emps = emp.map(({ id, first_name, last_name}) => 
             ({
                 name: `${first_name} ${last_name}`,
-                value: id
+                value: id,
             }));
-            empArray = emps;
+            empArr = emps;
         });
 
         db.viewManagers()
-        .then(([row]) => {
+        .then(([rows]) => {
             let man = rows;
-            const mans = man.map (({ id, first_name, last_name }) =>
-            ({
-                name: `${first_name}, ${last_name}`,
-                value: id
-            }));
-            manArr = mans;
-        })
-            .then(() => {
-                if (answers.employees === "Exit") {
-                    return con.end();
-                } else {
-                    // iterates through choices submitted and calls the approriate method
-                    switch (answers.employees) {
-                        case 'View All Employees':
-                            return db.viewAllEmployees()
-                            .then (([rows]) => {
-                                console.table(rows)
-                                initPrompt();
-                            });
-                            case 'View All Employees by Department':
-                                return db.viewAllEmployeesByDepartment()
-                                .then (([rows]) => {
-                                    console.table(rows);
+            const mans = man.map(({ id, first_name, last_name }) =>
+        ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
+        manArr = mans;
+    })
+        .then(() => {
+            // This tells the program to stop running
+            if (answers.employees === "Exit") {
+                return con.end();
+            } else {
+                // This iterates through all the choices submitted in prompt / calls the associated methods
+                switch (answers.employees) {
+                    case 'View All Employees':
+                        // Can use return instead of break for cases
+                        return db.viewAllEmployees()
+                        // The [rows] takes in the information from the rows that were called in the related method
+                        .then(([rows]) => {
+                            // console.table shows a table of the rendered rows
+                            console.table(rows)
+                            initPrompt();
+                        });
+                    case 'View All Employees By Department':
+                        return db.viewAllEmployeesByDepartment()
+                        .then(([rows]) => {
+                            console.table(rows)
+                            initPrompt();
+                        });
+                    case 'View All Employees By Manager':
+                        return db.viewAllEmployeesByManager()
+                        .then(([rows]) => {
+                            console.table(rows)
+                            initPrompt();
+                        });
+                    case 'View All Departments':
+                        return db.viewDepartments()
+                        .then(([rows]) => {
+                            console.table(rows);
+                            initPrompt();
+                        });
+                    case 'View All Roles':
+                        return db.viewRoles()
+                        .then(([rows]) => {
+                            console.table(rows)
+                            initPrompt();
+                        });
+                    case 'View All Managers':
+                        return db.viewManagers()
+                        .then(([rows]) => {
+                            console.table(rows)
+                            initPrompt();
+                        });
+                    case 'Add Employee':
+                        // Pass in arrays for method to use in class in db/index.js
+                        return db.addEmployee(rolArr, manArr).then(([res]) => {
+                            console.log('Successfully added employee!');
+                            initPrompt();
+                        });
+                    case 'More Employee Options':
+                        // Can add a switch statement in a switch statment to keep information grouped together preventing promise issues
+                        switch (answers.employeeOpts) {
+                            case 'Remove Employee':
+                                return db.deleteEmployee(empArr).then((res) => {
+                                    console.log("Successfully removed employee!");
                                     initPrompt();
                                 });
-                                case 'View All Roles':
-                                    return db.viewRoles()
-                                    .then(([rows]) => {
-                                        console.table(rows);
-                                        initPrompt;
-                                    });
-                                    case 'View All Managers':
-                                        return db.viewManagers()
-                                        .then (([rows]) => {
-                                            console.table(rows);
-                                            initPrompt;
-                                        });
-                                        case 'Add Employee':
-                                            return db.addEmployee(roleArray, manArr).then(([res]) => {
-                                                console.log('Succesfully added employee!');
-                                                initPrompt();
-                                            });
-                                            case 'More Employee Options':
-                                                switch (answers.employeeOpts) {
-                                                    case 'Remove Employee':
-                                                        return db.deleteEmployee(empArray).then((res) => {
-                                                            console.log("Succesfully removed employee!");
-                                                            initPrompt();
-                                                        });
-                                                        case 'Update Employee Manager':
-                                                            return db.updateEmployeeMan(empArray, manArr).then((res) => {
-                                                                console.log("Succesffuly updated employee's manager!");
-                                                                initPrompt();
-
-                                                            });
-                                                };
-                                                break;
-                                                case 'Department Options':
-                                                    switch (answers.deptOpts) {
-                                                        case 'Add Department':
-                                                            return db.addNewDepartment().then(([res]) => {
-                                                                console.log("Succesfully deleted department!");
-                                                                initPrompt();
-                                                            });
-                                                    }
-                                                    break;
-                                                    case 'Role Options':
-                                                        switch (answers.roleOpts) {
-                                                            case 'Add Role':
-                                                                return db.addRoles(rolArr).then ((res) => {
-                                                                    console.log('Succesfully added role!');
-                                                                    initPrompt();
-                                                                });
-                                                                case 'Remove Role':
-                                                                    return db.deleteRoles(roleArray).then((res) => {
-                                                                        console.log('Succesfully deleted role!');
-                                                                        initPrompt();
-                                                                    });
-                                                        }
-                                                        break;
-
-
-                    };
+                            case 'Update Employee Role':
+                                return db.updateEmployeeRole(rolArr, empArr).then((res) => {
+                                    console.log("Successfully updated employee's role!");
+                                    initPrompt();
+                                });
+                            case 'Update Employee Manager':
+                                return db.updateEmployeeMan(empArr, manArr,).then((res) => {
+                                    console.log("Successfully updated employee's manager!");
+                                    initPrompt();
+                                });
+                            }
+                    break;
+                    case 'Department Options':
+                        switch (answers.deptOpts) {
+                            case 'Add Department':
+                            return db.addNewDepartment().then(([res]) => {
+                                console.log('Successfully added department!');
+                                initPrompt();
+                            });
+                            case 'Remove Department':
+                                return db.deleteDepartment(deptArr).then((res) => {
+                                    console.log('Successfully deleted department!');
+                                    initPrompt();
+                                });
+                        }
+                    break;
+                    case 'Role Options':
+                        switch (answers.roleOpts) {
+                            case 'Add Role':
+                                return db.addRoles(rolArr).then((res) => {
+                                    console.log('Successfully added role!');
+                                    initPrompt();
+                                });
+                            case 'Remove Role':
+                                return db.deleteRoles(rolArr).then((res) => {
+                                    console.log('Successfully deleted role!');
+                                    initPrompt();
+                                });
+                        }
+                    break;
                 };
-            })
-            .catch(err => {
-                console.log(err);
-            });
-
+            };
+        });
+    })
+    .catch(err => {
+        console.log(err);
     });
-
-
 };
 initPrompt();
+
 
 
