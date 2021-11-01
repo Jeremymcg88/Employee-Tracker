@@ -1,21 +1,26 @@
 // Required dependecies 
 const { prompt } = require('inquirer');
 const con = require('./configs/connection');
+// const dotenv = require('dotenv').config();
+
 const Database = require('./db/index');
 const db = new Database ();
 
 
 
-function initPrompt () {
-    prompt ([
+
+
+function initPrompt() {
+    prompt([
         {
             type: "list",
             name: "employees",
-            message: "Please use the arrow keys to select",
+            message: "Please use the arrow keys to select what you would like to do.",
             choices: 
             [
-                "View All Employees",
-                "View All Employees By Department",
+                "View All Employees", 
+                "View All Employees By Department", 
+                "View All Employees By Manager", 
                 "View All Departments",
                 "View All Roles",
                 "View All Managers",
@@ -26,24 +31,24 @@ function initPrompt () {
                 "Exit"
             ]
         },
-        // Sub categories
+        // These create subcategories to reduce scrolling in prompt
         {
             type: "list",
-            name: "Employee Options",
+            name: "employeeOpts",
             message: "Please select from the list of options.",
-            choices: ["Add Role", "Remove Role",],
-            when: (answers) => answers.employees === "Role Options"
+            choices: ["Remove Employee", "Update Employee Role", "Update Employee Manager",],
+            when: (answers) => answers.employees === "More Employee Options"
         },
         {
             type: "list",
-            name: "Dept Options",
+            name: "deptOpts",
             message: "Please select from the list of options.",
             choices: ["Add Department", "Remove Department"],
             when: (answers) => answers.employees === "Department Options"
         },
         {
             type: "list",
-            name: "Role Options",
+            name: "roleOpts",
             message: "Please select from the list of options.",
             choices: ["Add Role", "Remove Role",],
             when: (answers) => answers.employees === "Role Options"
