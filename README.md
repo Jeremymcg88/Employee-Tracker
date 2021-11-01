@@ -1,10 +1,10 @@
-# Express-Note-Taker
+# Employee-Tracker 
 
 ![MIT](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## Description
 
-[ Note taking application that can write, save, and delete notes. This application incorporates Express.js. The information is then saved and returned with JSON]
+[By implementing Node.js, Inquirer, and MySQL we are able to create a CMS (content management system) that will allow companies to view, manage, and change their employee database. sensitive information is protected by node env]
 
 
 ## Table of Contents
@@ -17,8 +17,6 @@
 
 * [Contributing](#contributing)
 
-* [Tests](#tests)
-
 * [Questions](#questions)
 
 * [Repository](#Repository)
@@ -29,14 +27,14 @@
 
 To install necessary dependencies, run the following command:
 
-[ npm i express ]
+[ npm i ]
 
 
 ## Usage
 
 To use this application, run the following command:
 
-node server.js
+npm start 
 
 
 ## License
@@ -54,12 +52,12 @@ If you have any questions about the repo, open an issue or contact me directly a
 
 ## Walkthrough-Video
 
-[ https://watch.screencastify.com/v/h6viFBsmuXFPWClayjEC ]
+[]
 
-## Deployed
+## Built With 
 
-[ https://shrouded-peak-19398.herokuapp.com/ ]
+NodeJS, Inquirer, MySQL, JavaScript
 
 ## Repository
 
-[ https://github.com/Jeremymcg88/Express-Note-Taker ]
+[ https://github.com/Jeremymcg88/Employee-Tracker ]
