@@ -25,9 +25,13 @@
 
 ## **Screenshots:**
 
-![Screenshot](images\Screenshot 2021-11-01 223903.png)
-![Screenshot]()
-![Screenshot]()
+![Screenshot 2021-11-01 224022](https://user-images.githubusercontent.com/82800409/139791017-3b8ca10b-b942-4bbf-9186-ffbacda4079f.jpeg)
+![Screenshot 2021-11-01 223903](https://user-images.githubusercontent.com/82800409/139791184-1ce1fb5e-5c96-48b3-a78c-dd62b58fe16b.png)
+
+
+
+
+
 
 ## Installation
 
@@ -58,7 +62,7 @@ If you have any questions about the repo, open an issue or contact me directly a
 
 ## Walkthrough-Video
 
-[]
+[https://watch.screencastify.com/v/GO0oKxSrXqbuIbFOqfD2]
 
 ## Built With 
 
