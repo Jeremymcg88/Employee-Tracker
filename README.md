@@ -23,6 +23,12 @@
 
 * [Walkthrough-Video](#Walkthrough-Video)
 
+## **Screenshots:**
+
+![Screenshot](images\Screenshot 2021-11-01 223903.png)
+![Screenshot]()
+![Screenshot]()
+
 ## Installation
 
 To install necessary dependencies, run the following command:
